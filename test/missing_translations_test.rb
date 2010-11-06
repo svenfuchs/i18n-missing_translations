@@ -29,8 +29,8 @@ module AdvaCoreTests
       log.log([:missing_translations, :foo, :bar])
       log.dump(out = StringIO.new)
 
-      expected = '---  missing_translations:    foo:      bar: Bar '
-      assert_equal expected, out.string.gsub("\n", ' ')
+      expected = { 'missing_translations' => { 'foo' => { 'bar' => 'Bar' } } }
+      assert_equal expected, YAML.load(out.string)
     end
 
     test 'works as a rack middleware' do
