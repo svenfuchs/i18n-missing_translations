@@ -1,0 +1,29 @@
+h1. I18n::MissingTranslations
+
+I18n::MissingTranslations is a simple tool that helps with finding missing translations in your application.
+
+It consists of three parts:
+
+* a module that plugs into the I18n::ExceptionHandler class and logs I18n::MissingTranslationData exceptions
+* an in-memory logger that simply holds missing translations during a request or test run
+* a middleware that can be used to dump the contents of the logger to a file after each request
+
+This is what you might want to put into your test_helper:
+
+<pre>
+require 'i18n/missing_translations'
+at_exit { I18n.missing_translations.dump }
+</pre>
+
+If there are any missing translations then this will print out a YAML snippet for them that you can copy and paste to your locale file.
+
+The following hooks up the I18n::MissingTranslations middleware in development mode:
+
+<pre>
+require 'i18n/missing_translations'
+config.app_middleware.use(I18n::MissingTranslations, 'path/to/missing_translations.log') if Rails.env.development?
+</pre>
+
+This will then log missing tranlations in development mode to the given file. You can also omit the filename and it will default to @"#{Dir.pwd}/log/missing_translations.log"@.
+
+The middleware reads *and* writes per request. That means that on subsequent requests missing translations are *added* to the log file. So if you go ahead and copy translations from the log to your locale file you will also want to clear the log file.

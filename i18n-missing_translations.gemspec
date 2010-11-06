@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors      = ["Sven Fuchs"]
   s.email        = "svenfuchs@artweb-design.de"
   s.homepage     = "http://github.com/svenfuchs/i18n-missing_translations"
-  s.summary      = "[summary]"
-  s.description  = "[description]"
+  s.summary      = "Find missing translations in your code more easily"
+  s.description  = "Find missing translations in your code more easily."
 
   s.files        = `git ls-files app lib`.split("\n")
   s.platform     = Gem::Platform::RUBY
