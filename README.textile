@@ -21,9 +21,22 @@ The following hooks up the I18n::MissingTranslations middleware in development m
 
 <pre>
 require 'i18n/missing_translations'
-config.app_middleware.use(I18n::MissingTranslations, 'path/to/missing_translations.log') if Rails.env.development?
+config.app_middleware.use(I18n::MissingTranslations) if Rails.env.development?
 </pre>
 
-This will then log missing tranlations in development mode to the given file. You can also omit the filename and it will default to @"#{Dir.pwd}/log/missing_translations.log"@.
+This will then log missing tranlations in development mode to a file @missing_translations.yml@ in your locales dir, which is @config/locales@ if present (i.e. per Rails convention) or the current directory otherwise. You can also pass a filename as an argument:
 
-The middleware reads *and* writes per request. That means that on subsequent requests missing translations are *added* to the log file. So if you go ahead and copy translations from the log to your locale file you will also want to clear the log file.
+<pre>
+config.app_middleware.use(I18n::MissingTranslations, 'path/to/locales/missing.yml')
+</pre>
+
+The middleware reads *and* writes per request. That means that on subsequent requests missing translations are *added* to the @missing_translations.yml@ file. So if you go ahead and copy translations from the @missing_translations.yml@ to your actual locale files you will also want to clear or delete @missing_translations.yml@.
+
+NOTE that Rails (3.0.1) does not pick up new locale files between requests. That effectively means that changes to the @missing_translations.yml@ file will be overwritten unless you restart the server. Thus your workflow for finding and moving missing translation keys should look something like this:
+
+* start the server
+* click around/work on stuff
+* check @config/locales/missing_translations.yml@
+* copy any missing translation keys to your actual locale files and correct the translations
+* delete or clear @config/locales/missing_translations.yml@
+* restart the server

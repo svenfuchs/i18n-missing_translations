@@ -5,7 +5,7 @@ module AdvaCoreTests
     attr_reader :filename
 
     def setup
-      @filename = '/tmp/test_missing_translations.log'
+      @filename = '/tmp/i18n_missing_translations/missing_translations.yml'
       FileUtils.mkdir_p(File.dirname(filename))
     end
 
@@ -38,6 +38,19 @@ module AdvaCoreTests
       middleware = I18n::MissingTranslations.new(lambda { |*| I18n.t(:missing) }, filename)
       middleware.call({})
       assert_equal({ 'en' => { 'foo' => 'Foo', 'missing' => 'Missing' }}, YAML.load_file(filename))
+    end
+
+    test 'works as a middleware that reads an existing locale file, subsequently adds missing translations and writes them back' do
+      File.open(filename, 'w+') { |f| f.write(YAML.dump('en' => { 'foo' => 'Foo' })) }
+
+      app = lambda { I18n.t(:first_miss) }
+      middleware = I18n::MissingTranslations.new(lambda { |*| app.call }, filename)
+      middleware.call({})
+      assert_equal({ 'en' => { 'foo' => 'Foo', 'first_miss' => 'First Miss' }}, YAML.load_file(filename))
+
+      app = lambda { I18n.t(:second_miss) }
+      middleware.call({})
+      assert_equal({ 'en' => { 'foo' => 'Foo', 'first_miss' => 'First Miss', 'second_miss' => 'Second Miss' }}, YAML.load_file(filename))
     end
   end
 end

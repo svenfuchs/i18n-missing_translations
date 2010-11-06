@@ -1,5 +1,4 @@
 require 'yaml'
-require 'fileutils'
 
 module I18n
   class MissingTranslations
@@ -16,17 +15,15 @@ module I18n
       end
 
       def read(filename)
-        data = YAML.load_file(filename) rescue nil
-        self.replace(data) if data
+        self.replace(YAML.load_file(filename)) rescue nil
       end
 
       def write(filename)
-        FileUtils.mkdir_p(File.dirname(filename))
-        File.open(filename, 'w+') { |f| f.write(to_yml) }
+        File.open(filename, 'w+') { |f| f.write(to_yml) } unless empty?
       end
 
       def to_yml
-        empty? ? '' : YAML.dump(Hash[*to_a.flatten])
+        YAML.dump(Hash[*to_a.flatten]).split("\n").map(&:rstrip).join("\n")
       end
     end
   end

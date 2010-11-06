@@ -18,7 +18,7 @@ module I18n
 
     def initialize(app, filename = nil)
       @app = app
-      @filename = filename || guess_filename
+      @filename = filename || "#{locale_dir}/missing_translations.yml"
     end
 
     def call(*args)
@@ -30,12 +30,8 @@ module I18n
       I18n.missing_translations
     end
 
-    def guess_filename
-      if File.directory?("#{Dir.pwd}/log")
-        "#{Dir.pwd}/log/missing_translations.log"
-      else
-        "/tmp/#{File.dirname(Dir.pwd)}-missing_translations.log"
-      end
+    def locale_dir
+      File.directory?("#{Dir.pwd}/config/locales") ? "#{Dir.pwd}/config/locales" : Dir.pwd
     end
   end
 
