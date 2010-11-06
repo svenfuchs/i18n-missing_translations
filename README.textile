@@ -8,6 +8,16 @@ It consists of three parts:
 * an in-memory logger that simply holds missing translations during a request or test run
 * a middleware that can be used to dump the contents of the logger to a file after each request
 
+h3. Installation
+
+I18n::MissingTranslations requires I18n 0.5.0 which has not been released yet (2010-11-06). So you need to make sure you require the 0.5.0 branch from the I18n repository:
+
+<pre>
+gem 'i18n', :git => 'git://github.com/svenfuchs/i18n.git', :ref => '0.5.0'
+</pre>
+
+h3. Usage in test environment
+
 This is what you might want to put into your test_helper:
 
 <pre>
@@ -15,16 +25,18 @@ require 'i18n/missing_translations'
 at_exit { I18n.missing_translations.dump }
 </pre>
 
-If there are any missing translations then this will print out a YAML snippet for them that you can copy and paste to your locale file.
+If there are any missing translations then it will print out a YAML snippet for them that you can copy and paste to your locale file.
 
-The following hooks up the I18n::MissingTranslations middleware in development mode:
+h3. Usage in development environment
+
+The following hooks up the I18n::MissingTranslations middleware in development mode. You might want to add these lines as an initializer:
 
 <pre>
 require 'i18n/missing_translations'
 config.app_middleware.use(I18n::MissingTranslations) if Rails.env.development?
 </pre>
 
-This will then log missing tranlations in development mode to a file @missing_translations.yml@ in your locales dir, which is @config/locales@ if present (i.e. per Rails convention) or the current directory otherwise. You can also pass a filename as an argument:
+The middleware will then log missing tranlations to a file @missing_translations.yml@ in your locales dir (which is @config/locales@ if present or the current directory otherwise). You can also pass the filename as an argument:
 
 <pre>
 config.app_middleware.use(I18n::MissingTranslations, 'path/to/locales/missing.yml')
@@ -32,7 +44,9 @@ config.app_middleware.use(I18n::MissingTranslations, 'path/to/locales/missing.ym
 
 The middleware reads *and* writes per request. That means that on subsequent requests missing translations are *added* to the @missing_translations.yml@ file. So if you go ahead and copy translations from the @missing_translations.yml@ to your actual locale files you will also want to clear or delete @missing_translations.yml@.
 
-NOTE that Rails (3.0.1) does not pick up new locale files between requests. That effectively means that changes to the @missing_translations.yml@ file will be overwritten unless you restart the server. Thus your workflow for finding and moving missing translation keys should look something like this:
+*NOTE* Rails (3.0.1) does not pick up new locale files between requests. That effectively means that manual changes to the @missing_translations.yml@ file might be overwritten unless you restart the server.
+
+Thus your workflow for finding and moving missing translation keys might look something like this:
 
 * start the server
 * click around/work on stuff
