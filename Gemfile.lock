@@ -1,24 +1,18 @@
-GIT
-  remote: git://github.com/svenfuchs/i18n.git
-  revision: 23c9feffea8f23f686020b64770ca4dae030b545
-  ref: 0.5.0
-  specs:
-    i18n (0.4.2)
-
 PATH
   remote: .
   specs:
     i18n-missing_translations (0.0.1)
+      i18n (~> 0.6.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
+    i18n (0.6.0)
     test_declarative (0.0.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  i18n!
   i18n-missing_translations!
   test_declarative
