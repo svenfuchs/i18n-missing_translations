@@ -29,7 +29,7 @@ If there are any missing translations then it will print out a YAML snippet for 
 
 h3. Usage in development environment
 
-The following hooks up the I18n::MissingTranslations middleware in development mode. You might want to add these lines as an initializer:
+The following hooks up the I18n::MissingTranslations middleware in development mode. You might want to add these lines as an initializer or add it to your application.rb:
 
 <pre>
 require 'i18n/missing_translations'
