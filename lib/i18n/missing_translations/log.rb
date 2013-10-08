@@ -25,6 +25,9 @@ module I18n
       def to_yml
         YAML.dump(Hash[*to_a.flatten]).split("\n").map(&:rstrip).join("\n")
       end
+      
+      alias_method :to_s, :to_yml
+      
     end
   end
 end
