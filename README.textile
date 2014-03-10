@@ -1,3 +1,7 @@
+h1{color:red}. Now in gem i18n
+
+p{color:red}. This functionality has been incorporated into gem "i18n":https://github.com/svenfuchs/i18n. Therefore, most of the information below has become obsolete. The following is preserved for historical reference only.
+
 h1. I18n::MissingTranslations
 
 I18n::MissingTranslations is a simple tool that helps with finding missing translations in your application.
