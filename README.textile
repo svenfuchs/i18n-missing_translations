@@ -20,10 +20,22 @@ h3. Usage in test environment
 
 This is what you might want to put into your test_helper:
 
+h4. Minitest
+
+<pre>
+require 'i18n/missing_translations'
+Minitest.after_run do
+  I18n.missing_translations.dump
+end
+</pre>
+
+h4. Rspec
+
 <pre>
 require 'i18n/missing_translations'
 at_exit { I18n.missing_translations.dump }
 </pre>
+
 
 If there are any missing translations then it will print out a YAML snippet for them that you can copy and paste to your locale file.
 

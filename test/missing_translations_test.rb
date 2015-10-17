@@ -1,12 +1,13 @@
 require File.expand_path('../test_helper', __FILE__)
-
+require 'yaml'
 module AdvaCoreTests
-  class I18nMissingTranslationsLogTest < Test::Unit::TestCase
+  class I18nMissingTranslationsLogTest < Minitest::Spec
     attr_reader :filename
 
     def setup
       @filename = '/tmp/i18n_missing_translations/missing_translations.yml'
       FileUtils.mkdir_p(File.dirname(filename))
+      I18n.available_locales = [:en]
     end
 
     def teardown
@@ -14,7 +15,7 @@ module AdvaCoreTests
       I18n.missing_translations.clear
     end
 
-    test 'logs to a memory hash' do
+    it 'logs to a memory hash' do
       log = I18n::MissingTranslations::Log.new
       log.log([:missing_translations, :foo])
       log.log([:missing_translations, :bar, :baz, :boz])
@@ -24,7 +25,7 @@ module AdvaCoreTests
       assert_equal expected, log
     end
 
-    test 'dumps memory log as a yaml hash' do
+    it 'dumps memory log as a yaml hash' do
       log = I18n::MissingTranslations::Log.new
       log.log([:missing_translations, :foo, :bar])
       log.dump(out = StringIO.new)
@@ -33,16 +34,15 @@ module AdvaCoreTests
       assert_equal expected, YAML.load(out.string)
     end
 
-    test 'works as a rack middleware' do
+    it 'works as a rack middleware' do
       File.open(filename, 'w+') { |f| f.write(YAML.dump('en' => { 'foo' => 'Foo' })) }
       middleware = I18n::MissingTranslations.new(lambda { |*| I18n.t(:missing) }, filename)
       middleware.call({})
       assert_equal({ 'en' => { 'foo' => 'Foo', 'missing' => 'Missing' }}, YAML.load_file(filename))
     end
 
-    test 'works as a middleware that reads an existing locale file, subsequently adds missing translations and writes them back' do
+    it 'works as a middleware that reads an existing locale file, subsequently adds missing translations and writes them back' do
       File.open(filename, 'w+') { |f| f.write(YAML.dump('en' => { 'foo' => 'Foo' })) }
-
       app = lambda { I18n.t(:first_miss) }
       middleware = I18n::MissingTranslations.new(lambda { |*| app.call }, filename)
       middleware.call({})

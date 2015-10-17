@@ -1,18 +1,21 @@
 PATH
   remote: .
   specs:
-    i18n-missing_translations (0.0.1)
-      i18n (~> 0.6.0)
+    i18n-missing_translations (0.0.2)
+      i18n (~> 0.7.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    i18n (0.6.0)
-    test_declarative (0.0.4)
+    i18n (0.7.0)
+    minitest (5.8.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   i18n-missing_translations!
-  test_declarative
+  minitest
+
+BUNDLED WITH
+   1.10.6
